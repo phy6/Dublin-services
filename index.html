@@ -1,0 +1,1768 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <title>Dublin City Support Services</title>
+    <meta name="description" content="Free food, showers, shelter, and healthcare directory in Dublin with live open hours, direct calling, and maps." />
+    <meta property="og:title" content="Dublin City Support Services" />
+    <meta property="og:description" content="Free food, showers, shelter, and healthcare directory in Dublin with live open hours, direct calling, and maps." />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#064e3b" />
+    <style>
+      /* ==========================================================================
+         HIGH CONTRAST & ACCESSIBLE STYLING (WCAG AAA)
+         Optimized for old smartphones, high glare, low battery, and emergency use.
+         All touch targets >= 48px. Zero external dependencies.
+         ========================================================================== */
+      :root {
+        --bg-page: #f8fafc;
+        --bg-card: #ffffff;
+        --text-primary: #0f172a;
+        --text-muted: #334155;
+        --brand-green: #065f46;
+        --brand-green-hover: #044e39;
+        --brand-green-light: #ecfdf5;
+        --status-open-bg: #065f46;
+        --status-open-text: #ffffff;
+        --status-closed-bg: #e2e8f0;
+        --status-closed-text: #1e293b;
+        --border-color: #cbd5e1;
+        --border-strong: #94a3b8;
+        --chip-bg: #f1f5f9;
+        --chip-text: #0f172a;
+        --touch-min: 48px;
+        --radius: 12px;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0.05);
+      }
+
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        font-size: 17px;
+        line-height: 1.5;
+        color: var(--text-primary);
+        background-color: var(--bg-page);
+        padding: 0;
+        margin: 0;
+      }
+
+      /* Container: Strict single column for mobile ergonomics */
+      .app-shell {
+        max-width: 580px;
+        margin: 0 auto;
+        padding: 16px 14px 48px 14px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Emergency Top Banner */
+      .emergency-strip {
+        background-color: #0f172a;
+        color: #ffffff;
+        font-size: 15px;
+        padding: 10px 14px;
+        border-radius: var(--radius);
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        border: 1px solid #1e293b;
+      }
+
+      .emergency-strip strong {
+        color: #fef08a;
+      }
+
+      .emergency-strip a {
+        color: #ffffff;
+        background: #b91c1c;
+        text-decoration: none;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-weight: 700;
+        font-size: 14px;
+        white-space: nowrap;
+        min-height: 38px;
+        display: inline-flex;
+        align-items: center;
+      }
+
+      /* Header section */
+      header.app-header {
+        background: var(--bg-card);
+        border: 2px solid var(--border-color);
+        border-radius: var(--radius);
+        padding: 18px 16px 14px 16px;
+        margin-bottom: 12px;
+      }
+
+      .header-top-row {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 6px;
+      }
+
+      h1.site-title {
+        font-size: 24px;
+        font-weight: 800;
+        line-height: 1.2;
+        color: #0f172a;
+        letter-spacing: -0.02em;
+      }
+
+      p.site-subtitle {
+        font-size: 17px;
+        font-weight: 600;
+        color: #1e293b;
+        margin-top: 4px;
+        line-height: 1.35;
+      }
+
+      /* Seam Controls: Language & Map Toggles */
+      .header-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+        padding-top: 10px;
+        border-top: 1px solid var(--border-color);
+      }
+
+      .btn-toggle {
+        min-height: var(--touch-min);
+        padding: 8px 14px;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text-primary);
+        background: var(--chip-bg);
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        flex: 1;
+        touch-action: manipulation;
+      }
+
+      .btn-toggle:active {
+        background: #e2e8f0;
+      }
+
+      .btn-toggle.active {
+        background: var(--brand-green);
+        color: #ffffff;
+        border-color: var(--brand-green);
+      }
+
+      /* Status Strip */
+      .status-strip {
+        background: #ffffff;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 10px 14px;
+        margin-bottom: 16px;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-muted);
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+      }
+
+      .status-strip .live-clock {
+        color: var(--brand-green);
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* Stubbed Filter Container: hidden until > 8 cards */
+      .filter-container {
+        display: none; /* Auto-unhidden by JS when SERVICES.length > 8 */
+        margin-bottom: 16px;
+        background: var(--bg-card);
+        border: 2px solid var(--border-color);
+        border-radius: var(--radius);
+        padding: 12px;
+      }
+
+      .filter-scroll {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+
+      .filter-chip-btn {
+        min-height: var(--touch-min);
+        padding: 8px 16px;
+        font-size: 15px;
+        font-weight: 700;
+        background: var(--chip-bg);
+        border: 2px solid var(--border-color);
+        border-radius: 24px;
+        color: var(--text-primary);
+        white-space: nowrap;
+        cursor: pointer;
+      }
+
+      /* Stubbed Map View Panel */
+      .map-preview-panel {
+        display: none;
+        background: var(--bg-card);
+        border: 2px solid var(--border-color);
+        border-radius: var(--radius);
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+
+      .map-preview-panel.is-visible {
+        display: block;
+      }
+
+      .map-graphic {
+        width: 100%;
+        height: auto;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        background: #f1f5f9;
+        margin: 12px 0;
+      }
+
+      /* Section Heading: Instant Answer */
+      .section-heading-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        padding: 0 4px;
+      }
+
+      .section-title {
+        font-size: 19px;
+        font-weight: 800;
+        color: #0f172a;
+      }
+
+      .service-count {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-muted);
+      }
+
+      /* Service Card Stack */
+      .service-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .card {
+        background: var(--bg-card);
+        border: 2px solid var(--border-color);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      }
+
+      .card.is-open {
+        border-color: #047857;
+        box-shadow: 0 2px 6px rgba(4, 120, 87, 0.15);
+      }
+
+      /* "OPEN NOW" MUST BE VISIBLE BEFORE ANYTHING ELSE ON EACH SERVICE */
+      .card-status-banner {
+        padding: 12px 14px;
+        font-size: 16px;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        letter-spacing: 0.01em;
+      }
+
+      .card-status-banner.open {
+        background: var(--status-open-bg);
+        color: var(--status-open-text);
+      }
+
+      .card-status-banner.closed {
+        background: var(--status-closed-bg);
+        color: var(--status-closed-text);
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 16px;
+        text-transform: uppercase;
+      }
+
+      .status-indicator-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+
+      .card-status-banner.open .status-indicator-dot {
+        background-color: #4ade80;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4);
+      }
+
+      .card-status-banner.closed .status-indicator-dot {
+        background-color: #64748b;
+      }
+
+      .status-time-detail {
+        font-size: 14px;
+        font-weight: 700;
+        opacity: 0.95;
+      }
+
+      /* Card Content Body */
+      .card-body {
+        padding: 16px 14px;
+      }
+
+      .card-header-meta {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+
+      .service-name {
+        font-size: 21px;
+        font-weight: 800;
+        line-height: 1.25;
+        color: #0f172a;
+      }
+
+      .category-badge {
+        display: inline-block;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 6px;
+        background: #f1f5f9;
+        color: #1e293b;
+        border: 1px solid var(--border-color);
+        white-space: nowrap;
+        margin-top: 2px;
+      }
+
+      /* Hours row */
+      .hours-row {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 10px 12px;
+        margin-bottom: 12px;
+      }
+
+      .hours-label {
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        letter-spacing: 0.03em;
+        margin-bottom: 2px;
+      }
+
+      .hours-text {
+        font-size: 15px;
+        font-weight: 700;
+        color: #0f172a;
+      }
+
+      .hours-subnote {
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-top: 3px;
+      }
+
+      /* Offers tags as plain chips */
+      .offers-section {
+        margin-bottom: 16px;
+      }
+
+      .offers-label {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text-muted);
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+      }
+
+      .chips-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .plain-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 14px;
+        font-weight: 600;
+        background: #ffffff;
+        color: #0f172a;
+        padding: 6px 10px;
+        border-radius: 6px;
+        border: 1.5px solid #cbd5e1;
+      }
+
+      /* Action Buttons: Min 48px Touch Targets */
+      .actions-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      /* Tap phone number = call button */
+      .btn-call {
+        min-height: 52px;
+        background-color: var(--brand-green);
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        font-size: 18px;
+        font-weight: 800;
+        padding: 10px 16px;
+        border: 2px solid var(--brand-green);
+        touch-action: manipulation;
+        box-shadow: 0 2px 4px rgba(6, 95, 70, 0.2);
+      }
+
+      .btn-call:active {
+        background-color: var(--brand-green-hover);
+        transform: translateY(1px);
+      }
+
+      /* Tap address = open maps */
+      .btn-map {
+        min-height: 48px;
+        background-color: #ffffff;
+        color: #0f172a;
+        text-decoration: none;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 10px;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 10px 14px;
+        border: 2px solid var(--border-color);
+        touch-action: manipulation;
+        line-height: 1.3;
+      }
+
+      .btn-map:active {
+        background-color: #f1f5f9;
+      }
+
+      .btn-map-text {
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+      }
+
+      .btn-map-text .addr-label {
+        font-size: 12px;
+        text-transform: uppercase;
+        color: #475569;
+        font-weight: 700;
+      }
+
+      .btn-map-text .addr-val {
+        font-size: 15px;
+        color: #0f172a;
+      }
+
+      /* Footer */
+      footer.app-footer {
+        margin-top: auto;
+        padding: 24px 12px 12px 12px;
+        border-top: 2px solid var(--border-color);
+        font-size: 14px;
+        color: var(--text-muted);
+        line-height: 1.6;
+        text-align: center;
+      }
+
+      footer.app-footer a {
+        color: var(--brand-green);
+        font-weight: 700;
+        text-decoration: underline;
+      }
+
+      .footer-tell-us {
+        background: #ffffff;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius);
+        padding: 14px;
+        margin-bottom: 16px;
+        text-align: left;
+      }
+
+      .footer-tell-us strong {
+        display: block;
+        color: #0f172a;
+        font-size: 16px;
+        margin-bottom: 4px;
+      }
+
+      .footer-credits {
+        font-size: 13px;
+        color: #64748b;
+      }
+
+      /* Icons (inline SVG) */
+      .icon {
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+      }
+
+      /* High contrast focus rings for accessibility */
+      a:focus-visible, button:focus-visible {
+        outline: 3px solid #0284c7;
+        outline-offset: 2px;
+      }
+
+      /* Language Switcher Modal */
+      .modal-backdrop {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(15, 23, 42, 0.75);
+        z-index: 100;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+      }
+
+      .modal-backdrop.is-open {
+        display: flex;
+      }
+
+      .modal-dialog {
+        background: #ffffff;
+        border: 2px solid #0f172a;
+        border-radius: 16px;
+        padding: 20px 16px;
+        max-width: 480px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      }
+
+      .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--border-color);
+      }
+
+      .modal-title {
+        font-size: 20px;
+        font-weight: 800;
+        color: #0f172a;
+      }
+
+      .modal-close-icon-btn {
+        min-height: 44px;
+        min-width: 44px;
+        background: var(--chip-bg);
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 22px;
+        font-weight: 800;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #0f172a;
+      }
+
+      .lang-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+
+      @media (min-width: 440px) {
+        .lang-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      .lang-choice-btn {
+        min-height: 52px;
+        padding: 10px 14px;
+        font-size: 16px;
+        font-weight: 700;
+        color: #0f172a;
+        background: #ffffff;
+        border: 2px solid var(--border-color);
+        border-radius: 10px;
+        text-align: left;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 2px;
+      }
+
+      [dir="rtl"] .lang-choice-btn {
+        text-align: right;
+      }
+
+      .lang-choice-btn:hover {
+        border-color: var(--brand-green);
+        background: var(--chip-bg);
+      }
+
+      .lang-choice-btn.active {
+        background: #ecfdf5;
+        border-color: var(--brand-green);
+        color: var(--brand-green);
+        font-weight: 800;
+      }
+
+      .lang-choice-btn .lang-native {
+        font-size: 16px;
+        font-weight: 800;
+      }
+
+      .lang-choice-btn .lang-en-name {
+        font-size: 13px;
+        color: var(--text-muted);
+        font-weight: 600;
+      }
+
+      .modal-footer-btn {
+        width: 100%;
+        min-height: 48px;
+        background: #0f172a;
+        color: #ffffff;
+        border: 2px solid #0f172a;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .live-announcer {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-shell">
+      <!-- Immediate Emergency Strip -->
+      <aside class="emergency-strip" aria-label="Emergency assistance numbers">
+        <span><strong id="emerg-label">Life-threatening emergency?</strong> Call 999 or 112 (free)</span>
+        <a href="tel:999" aria-label="Call 999 emergency services">Call 999</a>
+      </aside>
+
+      <!-- 1. Header: name + one line "Free food, showers, shelter & healthcare in Dublin" -->
+      <header class="app-header" role="banner">
+        <div class="header-top-row">
+          <div>
+            <h1 class="site-title" id="txt-title">Dublin City Support Services</h1>
+            <p class="site-subtitle" id="txt-subtitle">Free food, showers, shelter &amp; healthcare in Dublin</p>
+          </div>
+        </div>
+
+        <!-- Expansion Seams (stubbed controls) -->
+        <div class="header-actions">
+          <button type="button" class="btn-toggle" id="btn-lang" aria-haspopup="dialog" aria-expanded="false" aria-controls="modal-lang" aria-label="Change language. Current: English">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <span id="btn-lang-text">Language</span>
+          </button>
+          <button type="button" class="btn-toggle" id="btn-map-toggle" aria-expanded="false" aria-controls="map-preview" aria-label="Toggle central Dublin offline overview map">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+            <span id="btn-map-text">Find me map</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Accessible Language Switcher Modal -->
+      <div class="modal-backdrop" id="modal-lang" role="dialog" aria-modal="true" aria-labelledby="modal-lang-title" hidden>
+        <div class="modal-dialog">
+          <div class="modal-header">
+            <h2 class="modal-title" id="modal-lang-title">Choose Language / Roghnaigh Teanga</h2>
+            <button type="button" class="modal-close-icon-btn" id="btn-close-lang-modal" aria-label="Close language selector">&times;</button>
+          </div>
+          <div class="lang-grid" role="radiogroup" aria-labelledby="modal-lang-title" id="lang-options-group">
+            <button type="button" class="lang-choice-btn active" data-lang="en" role="radio" aria-checked="true">
+              <span class="lang-native">English</span>
+              <span class="lang-en-name">English</span>
+            </button>
+            <button type="button" class="lang-choice-btn" data-lang="ga" role="radio" aria-checked="false">
+              <span class="lang-native">Gaeilge</span>
+              <span class="lang-en-name">Irish</span>
+            </button>
+            <button type="button" class="lang-choice-btn" data-lang="pl" role="radio" aria-checked="false">
+              <span class="lang-native">Polski</span>
+              <span class="lang-en-name">Polish</span>
+            </button>
+            <button type="button" class="lang-choice-btn" data-lang="ro" role="radio" aria-checked="false">
+              <span class="lang-native">Română</span>
+              <span class="lang-en-name">Romanian</span>
+            </button>
+            <button type="button" class="lang-choice-btn" data-lang="uk" role="radio" aria-checked="false">
+              <span class="lang-native">Українська</span>
+              <span class="lang-en-name">Ukrainian</span>
+            </button>
+            <button type="button" class="lang-choice-btn" data-lang="pt" role="radio" aria-checked="false">
+              <span class="lang-native">Português</span>
+              <span class="lang-en-name">Portuguese</span>
+            </button>
+            <button type="button" class="lang-choice-btn" data-lang="ar" role="radio" aria-checked="false">
+              <span class="lang-native">العربية</span>
+              <span class="lang-en-name">Arabic</span>
+            </button>
+            <button type="button" class="lang-choice-btn" data-lang="fr" role="radio" aria-checked="false">
+              <span class="lang-native">Français</span>
+              <span class="lang-en-name">French</span>
+            </button>
+          </div>
+          <button type="button" class="modal-footer-btn" id="btn-close-lang-footer">Done</button>
+        </div>
+      </div>
+      <!-- Screen Reader Live Announcer -->
+      <div class="live-announcer" id="sr-announcer" aria-live="polite" aria-atomic="true"></div>
+
+      <!-- 2. Status strip: "Updated <date> · Works offline" -->
+      <div class="status-strip" role="status" aria-live="polite">
+        <span id="txt-status-offline">Updated 8 Oct 2026 · Works offline</span>
+        <span class="live-clock" id="live-dublin-clock" aria-label="Current Dublin time">Dublin: --:--</span>
+      </div>
+
+      <!-- Expansion Seam: Stubbed filter chips by need (hidden until > 8 cards) -->
+      <nav class="filter-container" id="filter-container" aria-label="Filter by support type">
+        <div class="filter-scroll" role="tablist">
+          <button type="button" class="filter-chip-btn" data-filter="all">All Needs</button>
+          <button type="button" class="filter-chip-btn" data-filter="food">Food</button>
+          <button type="button" class="filter-chip-btn" data-filter="shower">Shower</button>
+          <button type="button" class="filter-chip-btn" data-filter="sleep">Sleep / Shelter</button>
+          <button type="button" class="filter-chip-btn" data-filter="health">Health</button>
+        </div>
+      </nav>
+
+      <!-- Expansion Seam: Stubbed "Find me" map view toggle -->
+      <section class="map-preview-panel" id="map-preview" aria-label="Map overview" hidden>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <h2 style="font-size:17px; font-weight:800;" id="txt-map-head">Dublin Support Locations (Offline Map)</h2>
+          <button type="button" id="btn-close-map" style="background:none; border:none; font-size:20px; font-weight:bold; cursor:pointer; padding:6px 10px;" aria-label="Close map">&times;</button>
+        </div>
+        <p style="font-size:14px; color:var(--text-muted); margin-bottom:10px;" id="txt-map-desc">
+          Key centres along the River Liffey corridor (Dublin 1, 2, 7 &amp; 8). Tap any address button below to get exact GPS directions.
+        </p>
+        <svg class="map-graphic" viewBox="0 0 500 240" role="img" aria-label="Stylized diagram of central Dublin support locations">
+          <!-- River Liffey -->
+          <rect width="500" height="240" fill="#f8fafc" />
+          <path d="M 0 120 C 120 110, 240 135, 360 125 C 430 120, 500 130, 500 130 L 500 150 C 430 140, 360 145, 240 155 C 120 130, 0 140, 0 140 Z" fill="#93c5fd" />
+          <text x="240" y="142" font-size="11" font-weight="700" fill="#1e3a8a" text-anchor="middle">RIVER LIFFEY</text>
+          <text x="240" y="25" font-size="12" font-weight="700" fill="#475569" text-anchor="middle">NORTH DUBLIN (D1 / D7)</text>
+          <text x="240" y="225" font-size="12" font-weight="700" fill="#475569" text-anchor="middle">SOUTH DUBLIN (D2 / D8)</text>
+
+          <!-- 1. Capuchin (North / Bow St) -->
+          <circle cx="160" cy="80" r="8" fill="#065f46" />
+          <text x="160" y="66" font-size="11" font-weight="800" fill="#0f172a" text-anchor="middle">1. Capuchin Day Centre</text>
+
+          <!-- 2. Inclusion Health Hub (North / Mountjoy Sq) -->
+          <circle cx="340" cy="55" r="8" fill="#065f46" />
+          <text x="340" y="42" font-size="11" font-weight="800" fill="#0f172a" text-anchor="middle">5. Inclusion Health Hub</text>
+
+          <!-- 3. Mendicity (South / Island St) -->
+          <circle cx="110" cy="175" r="8" fill="#065f46" />
+          <text x="110" y="198" font-size="11" font-weight="800" fill="#0f172a" text-anchor="middle">2. Mendicity Institute</text>
+
+          <!-- 4. Merchants Quay (South / Riverbank) -->
+          <circle cx="210" cy="170" r="8" fill="#065f46" />
+          <text x="210" y="192" font-size="11" font-weight="800" fill="#0f172a" text-anchor="middle">4. Merchants Quay</text>
+
+          <!-- 5. The Lighthouse (South / Pearse St) -->
+          <circle cx="370" cy="175" r="8" fill="#065f46" />
+          <text x="370" y="198" font-size="11" font-weight="800" fill="#0f172a" text-anchor="middle">3. The Lighthouse</text>
+        </svg>
+      </section>
+
+      <!-- Section Title -->
+      <div class="section-heading-row">
+        <h2 class="section-title" id="txt-directory-heading">Where to get help right now</h2>
+        <span class="service-count" id="service-count">5 services</span>
+      </div>
+
+      <!-- 3. Service cards rendered dynamically from SERVICES array -->
+      <main class="service-cards" id="services-list" role="feed" aria-label="Dublin support services list">
+        <!-- Rendered by JavaScript from SERVICES array -->
+      </main>
+
+      <!-- 4. Small footer: "Know a place? Tell us." + credits -->
+      <footer class="app-footer" role="contentinfo">
+        <div class="footer-tell-us">
+          <strong id="txt-footer-tell-title">Know a place? Tell us.</strong>
+          <p id="txt-footer-tell-body">Help keep this free resource accurate for people on Dublin streets.</p>
+          <p style="margin-top:8px;">
+            <a href="mailto:info@dublinsupport.ie?subject=New%20Service%20Suggestion%20Dublin" id="txt-footer-email-link">Email a new service or updated hours &rarr;</a>
+          </p>
+        </div>
+        <p class="footer-credits" id="txt-footer-credits">
+          Dublin City Support Services · Independent public crisis directory · No tracking · Free to use
+        </p>
+      </footer>
+    </div>
+
+    <!-- VANILLA JAVASCRIPT: DATA & LOGIC (NO BUILD STEP, WORKS FROM DISK) -->
+    <script>
+      /**
+       * ============================================================================
+       * SERVICES DATA ARRAY
+       * ============================================================================
+       * NON-DEVELOPER GUIDE TO ADDING OR UPDATING SERVICES:
+       * 1. Copy the template block below.
+       * 2. Fill in the name, category, phone, address, what's offered, and schedule.
+       * 3. Day codes for schedule:
+       *    0 = Sunday, 1 = Monday, 2 = Tuesday, 3 = Wednesday,
+       *    4 = Thursday, 5 = Friday, 6 = Saturday.
+       * 4. Times use 24-hour format: e.g. "07:30", "15:00", "22:30".
+       * 5. Save the file. Cards and OPEN NOW statuses update automatically!
+       * ============================================================================
+       */
+      const SERVICES = [
+        {
+          id: "capuchin-day-centre",
+          name: "Capuchin Day Centre",
+          nameGa: "Ionad Lae na gCaipisíneach",
+          category: "Emergency Shelter",
+          categoryGa: "Foscadh Éigeandála",
+          phone: "01 872 0770",
+          phoneRaw: "018720770",
+          address: "29 Bow Street, Smithfield, Dublin 7, D07 W657",
+          mapsQuery: "Capuchin Day Centre, 29 Bow St, Dublin",
+          offers: ["food", "water", "medical", "support"],
+          todayHoursSummary: "Mon–Fri & Sat 07:30–11:30, 12:30–15:00 · Sun Closed",
+          schedule: {
+            0: [], // Sun: Closed
+            1: [{ start: "07:30", end: "11:30" }, { start: "12:30", end: "15:00" }], // Mon
+            2: [{ start: "07:30", end: "11:30" }, { start: "12:30", end: "15:00" }], // Tue
+            3: [{ start: "07:30", end: "11:30" }, { start: "12:30", end: "15:00" }], // Wed
+            4: [{ start: "07:30", end: "11:30" }, { start: "12:30", end: "15:00" }], // Thu
+            5: [{ start: "07:30", end: "11:30" }, { start: "12:30", end: "15:00" }], // Fri
+            6: [{ start: "07:30", end: "11:30" }, { start: "12:30", end: "15:00" }], // Sat
+          },
+          notes: "Free breakfast 08:30–11:30. Free dinner 12:30–15:00. Showers, doctor and nurse clinic."
+        },
+        {
+          id: "mendicity-institute",
+          name: "Mendicity Institute",
+          nameGa: "Institiúid Mendicity",
+          category: "Emergency Shelter",
+          categoryGa: "Foscadh Éigeandála",
+          phone: "01 677 3308",
+          phoneRaw: "016773308",
+          address: "9 Island Street, The Liberties, Dublin 8, D08 XFV2",
+          mapsQuery: "Mendicity Institute, 9 Island St, Dublin",
+          offers: ["food", "water", "support"],
+          todayHoursSummary: "Mon–Sat 08:30–22:30 · Sun 09:30–14:30 & 16:30–22:30",
+          schedule: {
+            0: [{ start: "09:30", end: "14:30" }, { start: "16:30", end: "22:30" }], // Sun
+            1: [{ start: "08:30", end: "22:30" }], // Mon
+            2: [{ start: "08:30", end: "22:30" }], // Tue
+            3: [{ start: "08:30", end: "22:30" }], // Wed
+            4: [{ start: "08:30", end: "22:30" }], // Thu
+            5: [{ start: "08:30", end: "22:30" }], // Fri
+            6: [{ start: "08:30", end: "22:30" }], // Sat
+          },
+          notes: "Warm daytime refuge, hot food, drinking water, phone charging, and social care."
+        },
+        {
+          id: "the-lighthouse-cafe",
+          name: "The Lighthouse Cafe",
+          nameGa: "Caifé The Lighthouse",
+          category: "Food",
+          categoryGa: "Bia",
+          phone: "+353 89 707 8166",
+          phoneRaw: "+353897078166",
+          address: "28 Pearse Street, Dublin 2, D02 T883",
+          mapsQuery: "The Lighthouse Cafe Tiglin, 28 Pearse St, Dublin",
+          offers: ["food", "clothing"],
+          todayHoursSummary: "Sat & Sun 15:00–18:00 (Mon–Fri varied, call to check)",
+          schedule: {
+            0: [{ start: "15:00", end: "18:00" }], // Sun
+            1: [], // Mon: varied
+            2: [], // Tue: varied
+            3: [], // Wed: varied
+            4: [], // Thu: varied
+            5: [], // Fri: varied
+            6: [{ start: "15:00", end: "18:00" }], // Sat
+          },
+          notes: "Free sit-down meals, takeaway lunch packs, warm coats, shoes, and clothing essentials."
+        },
+        {
+          id: "merchants-quay-ireland",
+          name: "Merchants Quay Ireland",
+          nameGa: "Cé na gCeannaithe Éireann",
+          category: "Emergency Shelter",
+          categoryGa: "Foscadh Éigeandála",
+          phone: "01 524 0160",
+          phoneRaw: "015240160",
+          address: "13-14 Merchants Quay, Dublin 8, D08 E308",
+          mapsQuery: "Merchants Quay Ireland Riverbank, 13 Merchants Quay, Dublin",
+          offers: ["food", "water", "medical"],
+          todayHoursSummary: "Mon–Fri 08:00–19:00 · Sun 08:00–14:00 · Sat Closed",
+          schedule: {
+            0: [{ start: "08:00", end: "14:00" }], // Sun
+            1: [{ start: "08:00", end: "19:00" }], // Mon
+            2: [{ start: "08:00", end: "19:00" }], // Tue
+            3: [{ start: "08:00", end: "19:00" }], // Wed
+            4: [{ start: "08:00", end: "19:00" }], // Thu
+            5: [{ start: "08:00", end: "19:00" }], // Fri
+            6: [], // Sat: Closed
+          },
+          notes: "Riverbank Open Access: Hot food, tea/coffee, clean water, medical clinic, showers."
+        },
+        {
+          id: "inclusion-health-hub",
+          name: "Inclusion Health Hub",
+          nameGa: "Mol Sláinte Ionchuimsitheach",
+          category: "Healthcare",
+          categoryGa: "Cúram Sláinte",
+          phone: "01 233 6990",
+          phoneRaw: "012336990",
+          address: "37 Mountjoy Square South, Dublin 1, D01 K1F6",
+          mapsQuery: "37 Mountjoy Square South, Dublin 1",
+          offers: ["medical"],
+          todayHoursSummary: "Mon–Fri 09:30–12:00 (Appt) & 13:30–16:00 (Walk-in) · Sat–Sun Closed",
+          schedule: {
+            0: [], // Sun: Closed
+            1: [{ start: "09:30", end: "12:00" }, { start: "13:30", end: "16:00" }], // Mon
+            2: [{ start: "09:30", end: "12:00" }, { start: "13:30", end: "16:00" }], // Tue
+            3: [{ start: "09:30", end: "12:00" }, { start: "13:30", end: "16:00" }], // Wed
+            4: [{ start: "09:30", end: "12:00" }, { start: "13:30", end: "16:00" }], // Thu
+            5: [{ start: "09:30", end: "12:00" }, { start: "13:30", end: "16:00" }], // Fri
+            6: [], // Sat: Closed
+          },
+          notes: "Specialist free GP care, wound dressing, nursing, and harm reduction for those without home."
+        }
+      ];
+
+      // ============================================================================
+      // VOCABULARY & TRANSLATIONS (DUBLIN COMMUNITY LANGUAGES)
+      // ============================================================================
+      // Appropriate languages for Dublin crisis, asylum & community support:
+      // en (English), ga (Irish / Gaeilge), pl (Polish), ro (Romanian),
+      // uk (Ukrainian), pt (Portuguese), ar (Arabic), fr (French).
+      // ============================================================================
+      const I18N = {
+        en: {
+          langName: "English",
+          langCode: "EN",
+          title: "Dublin City Support Services",
+          subtitle: "Free food, showers, shelter & healthcare in Dublin",
+          emergLabel: "Life-threatening emergency?",
+          call999: "Call 999",
+          statusOffline: "Updated 8 Oct 2026 · Works offline",
+          dirHeading: "Where to get help right now",
+          openNow: "OPEN NOW",
+          closedNow: "CLOSED NOW",
+          closesAt: "Closes at",
+          opensTodayAt: "Opens today at",
+          opensTomorrowAt: "Opens tomorrow at",
+          opensNext: "Opens",
+          todayHoursLabel: "Today's Hours",
+          offersLabel: "What is offered:",
+          callBtn: "Call",
+          callAriaPrefix: "Call",
+          mapBtnLabel: "Open map directions",
+          mapAriaPrefix: "Open Google Maps directions to",
+          tellTitle: "Know a place? Tell us.",
+          tellBody: "Help keep this free resource accurate for people on Dublin streets.",
+          tellLink: "Email a new service or updated hours →",
+          credits: "Dublin City Support Services · Independent public crisis directory · No tracking · Free to use",
+          mapHead: "Dublin Support Locations (Offline Map)",
+          mapDesc: "Key centres along the River Liffey corridor (Dublin 1, 2, 7 & 8). Tap any address button below to get exact GPS directions.",
+          findMeMapBtn: "Find me map",
+          langBtn: "Language (EN)",
+          changeLangLabel: "Change language",
+          modalTitle: "Choose Language / Roghnaigh Teanga",
+          modalDone: "Done",
+          announcerChanged: "Language changed to English",
+          tags: {
+            food: "Free Food",
+            water: "Clean Water",
+            medical: "Medical Care",
+            support: "Advice & Support",
+            clothing: "Warm Clothes",
+            shower: "Showers",
+            sleep: "Shelter / Sleep"
+          },
+          days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+        },
+        ga: {
+          langName: "Gaeilge",
+          langCode: "GA",
+          title: "Seirbhísí Tacaíochta Bhaile Átha Cliath",
+          subtitle: "Bia, cithfholcadáin, foscadh & cúram sláinte saor in aisce i mBÁC",
+          emergLabel: "Éigeandáil a chuireann beatha i mbaol?",
+          call999: "Glaoigh 999",
+          statusOffline: "Nuashonraithe 8 DF 2026 · Oibríonn sé as líne",
+          dirHeading: "Cá háit le cabhair a fháil anois",
+          openNow: "OSCAILTE ANOIS",
+          closedNow: "DÚNTA ANOIS",
+          closesAt: "Dúnann ag",
+          opensTodayAt: "Osclaíonn inniu ag",
+          opensTomorrowAt: "Osclaíonn amárach ag",
+          opensNext: "Osclaíonn",
+          todayHoursLabel: "Uaireanta an Lae Inniu",
+          offersLabel: "Cad atá ar fáil:",
+          callBtn: "Glaoigh ar",
+          callAriaPrefix: "Glaoigh ar",
+          mapBtnLabel: "Treoracha léarscáile",
+          mapAriaPrefix: "Oscail treoracha Google Maps chuig",
+          tellTitle: "An bhfuil eolas agat ar áit? Inis dúinn.",
+          tellBody: "Cabhraigh linn an eolaire seo a choinneáil cruinn do dhaoine ar na sráideanna.",
+          tellLink: "Seol ríomhphost le seirbhís nua nó uaireanta nua →",
+          credits: "Seirbhísí Tacaíochta Bhaile Átha Cliath · Acmhainn ghéarchéime neamhspleách · Saor in aisce",
+          mapHead: "Láithreacha Tacaíochta Bhaile Átha Cliath",
+          mapDesc: "Príomhionaid feadh na Life (BÁC 1, 2, 7 & 8). Beartaigh ar sheoladh thíos le haghaidh treoracha GPS.",
+          findMeMapBtn: "Léarscáil",
+          langBtn: "Teanga (GA)",
+          changeLangLabel: "Athraigh an teanga",
+          modalTitle: "Roghnaigh Teanga / Choose Language",
+          modalDone: "Críochnaithe",
+          announcerChanged: "Athraíodh an teanga go Gaeilge",
+          tags: {
+            food: "Bia Saor",
+            water: "Uisce Óil",
+            medical: "Cúram Leighis",
+            support: "Comhairle & Tacaíocht",
+            clothing: "Éadaí Te",
+            shower: "Cithfholcadáin",
+            sleep: "Foscadh / Codladh"
+          },
+          days: ["Dé Domhnaigh", "Dé Luain", "Dé Máirt", "Dé Céadaoin", "Déardaoin", "Dé hAoine", "Dé Sathairn"]
+        },
+        pl: {
+          langName: "Polski",
+          langCode: "PL",
+          title: "Wsparcie Miejskie w Dublinie",
+          subtitle: "Darmowe posiłki, prysznice, schronienie i opieka medyczna w Dublinie",
+          emergLabel: "Zagrożenie życia lub zdrowia?",
+          call999: "Zadzwoń pod 999",
+          statusOffline: "Zaktualizowano 8 paź 2026 · Działa offline",
+          dirHeading: "Gdzie uzyskać pomoc teraz",
+          openNow: "OTWARTE TERAZ",
+          closedNow: "ZAMKNIĘTE TERAZ",
+          closesAt: "Zamyka się o",
+          opensTodayAt: "Otwiera się dzisiaj o",
+          opensTomorrowAt: "Otwiera się jutro o",
+          opensNext: "Otwiera się w",
+          todayHoursLabel: "Dzisiejsze godziny otwarcia",
+          offersLabel: "Dostępna pomoc:",
+          callBtn: "Zadzwoń",
+          callAriaPrefix: "Zadzwoń do",
+          mapBtnLabel: "Wskazówki dojazdu",
+          mapAriaPrefix: "Otwórz wskazówki w Google Maps do",
+          tellTitle: "Znasz pomocne miejsce? Zgłoś je.",
+          tellBody: "Pomóż zachować aktualność tego bezpłatnego katalogu dla osób na ulicach Dublina.",
+          tellLink: "Wyślij e-mail z nowym miejscem lub zaktualizowanymi godzinami →",
+          credits: "Wsparcie Miejskie w Dublinie · Niezależny bezpłatny informator kryzysowy",
+          mapHead: "Miejsca Pomocy w Dublinie (Mapa offline)",
+          mapDesc: "Główne ośrodki wzdłuż rzeki Liffey (Dublin 1, 2, 7 i 8). Dotknij adresu, aby otworzyć nawigację GPS.",
+          findMeMapBtn: "Mapa pomocy",
+          langBtn: "Język (PL)",
+          changeLangLabel: "Zmień język",
+          modalTitle: "Wybierz język / Choose Language",
+          modalDone: "Gotowe",
+          announcerChanged: "Zmieniono język na polski",
+          tags: {
+            food: "Darmowe jedzenie",
+            water: "Woda pitna",
+            medical: "Pomoc medyczna",
+            support: "Wsparcie i porady",
+            clothing: "Ciepłe ubrania",
+            shower: "Prysznice",
+            sleep: "Schronienie / Nocleg"
+          },
+          days: ["Niedziela", "Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota"]
+        },
+        ro: {
+          langName: "Română",
+          langCode: "RO",
+          title: "Servicii de Sprijin în Dublin",
+          subtitle: "Mâncare gratuită, dușuri, adăpost și asistență medicală în Dublin",
+          emergLabel: "Urgență cu pericol de viață?",
+          call999: "Sunați la 999",
+          statusOffline: "Actualizat 8 oct 2026 · Funcționează offline",
+          dirHeading: "Unde puteți primi ajutor chiar acum",
+          openNow: "DESCHIS ACUM",
+          closedNow: "ÎNCHIS ACUM",
+          closesAt: "Se închide la",
+          opensTodayAt: "Se deschide azi la",
+          opensTomorrowAt: "Se deschide mâine la",
+          opensNext: "Se deschide",
+          todayHoursLabel: "Programul de azi",
+          offersLabel: "Servicii oferite:",
+          callBtn: "Sunați",
+          callAriaPrefix: "Sunați la",
+          mapBtnLabel: "Indicații pe hartă",
+          mapAriaPrefix: "Deschideți indicațiile Google Maps către",
+          tellTitle: "Știți un loc de ajutor? Spuneți-ne.",
+          tellBody: "Ajutați la menținerea acestui ghid gratuit pentru persoanele de pe străzile din Dublin.",
+          tellLink: "Trimiteți un e-mail cu un nou serviciu sau program actualizat →",
+          credits: "Servicii de Sprijin în Dublin · Ghid public independent de criză",
+          mapHead: "Locații de sprijin în Dublin (Hartă offline)",
+          mapDesc: "Centre principale de-a lungul râului Liffey (Dublin 1, 2, 7 și 8). Apăsați pe orice adresă pentru navigație GPS.",
+          findMeMapBtn: "Hartă",
+          langBtn: "Limbă (RO)",
+          changeLangLabel: "Schimbați limba",
+          modalTitle: "Alegeți limba / Choose Language",
+          modalDone: "Gata",
+          announcerChanged: "Limba a fost schimbată în română",
+          tags: {
+            food: "Mâncare gratuită",
+            water: "Apă potabilă",
+            medical: "Îngrijire medicală",
+            support: "Consiliere și sprijin",
+            clothing: "Haine groase",
+            shower: "Dușuri",
+            sleep: "Adăpost / Somn"
+          },
+          days: ["Duminică", "Luni", "Marți", "Miercuri", "Joi", "Vineri", "Sâmbătă"]
+        },
+        uk: {
+          langName: "Українська",
+          langCode: "UK",
+          title: "Служби Підтримки у Дубліні",
+          subtitle: "Безкоштовна їжа, душ, притулок та медична допомога у Дубліні",
+          emergLabel: "Загроза життю чи невідкладна допомога?",
+          call999: "Дзвоніть 999",
+          statusOffline: "Оновлено 8 жовт 2026 · Працює офлайн",
+          dirHeading: "Де отримати допомогу прямо зараз",
+          openNow: "ВІДКРИТО ЗАРАЗ",
+          closedNow: "ЗАЧИНЕНО ЗАРАЗ",
+          closesAt: "Зачиняється о",
+          opensTodayAt: "Відкривається сьогодні о",
+          opensTomorrowAt: "Відкривається завтра о",
+          opensNext: "Відкривається у",
+          todayHoursLabel: "Години роботи сьогодні",
+          offersLabel: "Що надається:",
+          callBtn: "Зателефонувати",
+          callAriaPrefix: "Зателефонувати до",
+          mapBtnLabel: "Маршрут на карті",
+          mapAriaPrefix: "Відкрити маршрут у Google Maps до",
+          tellTitle: "Знаєте місце допомоги? Повідомте нас.",
+          tellBody: "Допоможіть зберегти цей довідник точним для людей на вулицях Дубліна.",
+          tellLink: "Надіслати листа про нову службу чи оновлені години →",
+          credits: "Служби Підтримки у Дубліні · Незалежний кризовий довідник",
+          mapHead: "Місця допомоги у Дубліні (Офлайн-карта)",
+          mapDesc: "Основні центри вздовж річки Ліффі (Дублін 1, 2, 7 та 8). Натисніть на адресу для навігації GPS.",
+          findMeMapBtn: "Карта допомоги",
+          langBtn: "Мова (UK)",
+          changeLangLabel: "Змінити мову",
+          modalTitle: "Оберіть мову / Choose Language",
+          modalDone: "Готово",
+          announcerChanged: "Мову змінено на українську",
+          tags: {
+            food: "Безкоштовна їжа",
+            water: "Питна вода",
+            medical: "Медична допомога",
+            support: "Консультації та підтримка",
+            clothing: "Теплий одяг",
+            shower: "Душ",
+            sleep: "Притулок / Ночівля"
+          },
+          days: ["Неділя", "Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота"]
+        },
+        pt: {
+          langName: "Português",
+          langCode: "PT",
+          title: "Serviços de Apoio em Dublin",
+          subtitle: "Comida gratuita, banho, abrigo e cuidados de saúde em Dublin",
+          emergLabel: "Emergência médica com risco de vida?",
+          call999: "Ligue 999",
+          statusOffline: "Atualizado em 8 out 2026 · Funciona offline",
+          dirHeading: "Onde conseguir ajuda agora mesmo",
+          openNow: "ABERTO AGORA",
+          closedNow: "FECHADO AGORA",
+          closesAt: "Fecha às",
+          opensTodayAt: "Abre hoje às",
+          opensTomorrowAt: "Abre amanhã às",
+          opensNext: "Abre",
+          todayHoursLabel: "Horário de hoje",
+          offersLabel: "Serviços oferecidos:",
+          callBtn: "Ligar",
+          callAriaPrefix: "Ligar para",
+          mapBtnLabel: "Ver rotas no mapa",
+          mapAriaPrefix: "Abrir rotas no Google Maps para",
+          tellTitle: "Conhece um local de ajuda? Conte-nos.",
+          tellBody: "Ajude a manter este recurso gratuito e preciso para quem está nas ruas de Dublin.",
+          tellLink: "Enviar e-mail com novo local ou horário atualizado →",
+          credits: "Serviços de Apoio em Dublin · Guia comunitário independente",
+          mapHead: "Locais de Apoio em Dublin (Mapa offline)",
+          mapDesc: "Principais centros ao longo do Rio Liffey (Dublin 1, 2, 7 e 8). Toque no endereço para GPS.",
+          findMeMapBtn: "Mapa",
+          langBtn: "Idioma (PT)",
+          changeLangLabel: "Alterar idioma",
+          modalTitle: "Escolha o idioma / Choose Language",
+          modalDone: "Concluído",
+          announcerChanged: "Idioma alterado para português",
+          tags: {
+            food: "Comida Grátis",
+            water: "Água Potável",
+            medical: "Cuidados Médicos",
+            support: "Apoio e Orientação",
+            clothing: "Roupas Quentes",
+            shower: "Banhos",
+            sleep: "Abrigo / Pernoite"
+          },
+          days: ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"]
+        },
+        ar: {
+          langName: "العربية",
+          langCode: "AR",
+          title: "خدمات الدعم في مدينة دبلن",
+          subtitle: "طعام مجاني، حمامات، مأوى، ورعاية صحية في دبلن",
+          emergLabel: "حالة طوارئ تهدد الحياة؟",
+          call999: "اتصل بـ 999",
+          statusOffline: "مُحدّث 8 أكتوبر 2026 · يعمل بدون إنترنت",
+          dirHeading: "أين يمكنك الحصول على المساعدة الآن",
+          openNow: "مفتوح الآن",
+          closedNow: "مغلق الآن",
+          closesAt: "يغلق عند الساعة",
+          opensTodayAt: "يفتح اليوم عند الساعة",
+          opensTomorrowAt: "يفتح غداً عند الساعة",
+          opensNext: "يفتح يوم",
+          todayHoursLabel: "ساعات العمل اليوم",
+          offersLabel: "الخدمات المتوفرة:",
+          callBtn: "اتصال",
+          callAriaPrefix: "الاتصال بـ",
+          mapBtnLabel: "اتجاهات الخريطة",
+          mapAriaPrefix: "فتح اتجاهات خرائط Google إلى",
+          tellTitle: "هل تعرف موقعاً مساعداً؟ أخبرنا.",
+          tellBody: "ساعد في إبقاء هذا الدليل المجاني دقيقاً لمن هم في شوارع دبلن.",
+          tellLink: "أرسل بريداً إلكترونياً بموقع جديد أو ساعات عمل محدثة ←",
+          credits: "خدمات الدعم في دبلن · دليل أزمات عام ومستقل",
+          mapHead: "مواقع الدعم في دبلن (خريطة بدون إنترنت)",
+          mapDesc: "المراكز الرئيسية على طول نهر ليفي (دبلن 1، 2، 7 و 8). اضغط على أي عنوان للاتجاهات.",
+          findMeMapBtn: "خريطة",
+          langBtn: "اللغة (AR)",
+          changeLangLabel: "تغيير اللغة",
+          modalTitle: "اختر اللغة / Choose Language",
+          modalDone: "تم",
+          announcerChanged: "تم تغيير اللغة إلى العربية",
+          tags: {
+            food: "طعام مجاني",
+            water: "مياه شرب",
+            medical: "رعاية طبية",
+            support: "استشارات ودعم",
+            clothing: "ملابس دافئة",
+            shower: "حمامات",
+            sleep: "مأوى / مبيت"
+          },
+          days: ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"]
+        },
+        fr: {
+          langName: "Français",
+          langCode: "FR",
+          title: "Services de Soutien de Dublin",
+          subtitle: "Nourriture gratuite, douches, hébergement et soins à Dublin",
+          emergLabel: "Urgence vitale ?",
+          call999: "Appelez le 999",
+          statusOffline: "Mis à jour le 8 oct 2026 · Fonctionne hors ligne",
+          dirHeading: "Où trouver de l'aide maintenant",
+          openNow: "OUVERT MAINTENANT",
+          closedNow: "FERMÉ ACTUELLEMENT",
+          closesAt: "Ferme à",
+          opensTodayAt: "Ouvre aujourd'hui à",
+          opensTomorrowAt: "Ouvre demain à",
+          opensNext: "Ouvre",
+          todayHoursLabel: "Horaires aujourd'hui",
+          offersLabel: "Aide proposée :",
+          callBtn: "Appeler",
+          callAriaPrefix: "Appeler",
+          mapBtnLabel: "Itinéraire sur la carte",
+          mapAriaPrefix: "Ouvrir l'itinéraire Google Maps vers",
+          tellTitle: "Vous connaissez un lieu ? Dites-le-nous.",
+          tellBody: "Aidez-nous à garder ce guide gratuit à jour pour les personnes dans la rue à Dublin.",
+          tellLink: "Envoyer un e-mail avec un nouveau lieu ou des horaires modifiés →",
+          credits: "Services de Soutien de Dublin · Répertoire d'urgence public et indépendant",
+          mapHead: "Centres de Soutien à Dublin (Carte hors ligne)",
+          mapDesc: "Principaux centres le long de la Liffey (Dublin 1, 2, 7 & 8). Appuyez sur une adresse pour le GPS.",
+          findMeMapBtn: "Carte",
+          langBtn: "Langue (FR)",
+          changeLangLabel: "Changer de langue",
+          modalTitle: "Choisir la langue / Choose Language",
+          modalDone: "Fermer",
+          announcerChanged: "Langue modifiée en français",
+          tags: {
+            food: "Nourriture gratuite",
+            water: "Eau potable",
+            medical: "Soins médicaux",
+            support: "Conseil & Soutien",
+            clothing: "Vêtements chauds",
+            shower: "Douches",
+            sleep: "Hébergement / Nuit"
+          },
+          days: ["Dimanche", "Lundi", "Marți", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
+        }
+      };
+
+      let currentLang = "en";
+
+      // ============================================================================
+      // LIVE DUBLIN TIME COMPUTATION
+      // ============================================================================
+      function getDublinNow() {
+        const now = new Date();
+        try {
+          const formatter = new Intl.DateTimeFormat("en-IE", {
+            timeZone: "Europe/Dublin",
+            weekday: "short",
+            hour: "numeric",
+            minute: "numeric",
+            hour12: false
+          });
+          const parts = formatter.formatToParts(now);
+          const p = {};
+          parts.forEach(pt => { p[pt.type] = pt.value; });
+          const dayMap = { "Sun": 0, "Mon": 1, "Tue": 2, "Wed": 3, "Thu": 4, "Fri": 5, "Sat": 6 };
+          const dayOfWeek = dayMap[p.weekday] !== undefined ? dayMap[p.weekday] : now.getDay();
+          const hours = parseInt(p.hour, 10) || 0;
+          const minutes = parseInt(p.minute, 10) || 0;
+          return {
+            dayOfWeek,
+            hours,
+            minutes,
+            totalMinutes: hours * 60 + minutes,
+            timeString: `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
+          };
+        } catch (err) {
+          const hours = now.getHours();
+          const minutes = now.getMinutes();
+          return {
+            dayOfWeek: now.getDay(),
+            hours,
+            minutes,
+            totalMinutes: hours * 60 + minutes,
+            timeString: `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
+          };
+        }
+      }
+
+      function timeToMinutes(timeStr) {
+        if (!timeStr) return 0;
+        const [h, m] = timeStr.split(":").map(Number);
+        return h * 60 + m;
+      }
+
+      /**
+       * Determines if service is currently open based on live Dublin time.
+       * Also calculates closing time or next opening time.
+       */
+      function calculateServiceStatus(service, dublinNow) {
+        const todaySlots = service.schedule[dublinNow.dayOfWeek] || [];
+        const currentMins = dublinNow.totalMinutes;
+        const strings = I18N[currentLang];
+
+        // Check if currently open in any slot today
+        for (const slot of todaySlots) {
+          const startM = timeToMinutes(slot.start);
+          const endM = timeToMinutes(slot.end);
+          if (currentMins >= startM && currentMins < endM) {
+            return {
+              isOpen: true,
+              detailText: `${strings.closesAt} ${slot.end}`
+            };
+          }
+        }
+
+        // Not currently open. Check if opening later today
+        for (const slot of todaySlots) {
+          const startM = timeToMinutes(slot.start);
+          if (currentMins < startM) {
+            return {
+              isOpen: false,
+              detailText: `${strings.opensTodayAt} ${slot.start}`
+            };
+          }
+        }
+
+        // Not opening later today. Find next opening day
+        for (let offset = 1; offset <= 7; offset++) {
+          const nextDayIndex = (dublinNow.dayOfWeek + offset) % 7;
+          const nextDaySlots = service.schedule[nextDayIndex] || [];
+          if (nextDaySlots.length > 0) {
+            const firstSlot = nextDaySlots[0];
+            if (offset === 1) {
+              return {
+                isOpen: false,
+                detailText: `${strings.opensTomorrowAt} ${firstSlot.start}`
+              };
+            } else {
+              const dayName = strings.days[nextDayIndex];
+              return {
+                isOpen: false,
+                detailText: `${strings.opensNext} ${dayName} ${firstSlot.start}`
+              };
+            }
+          }
+        }
+
+        return {
+          isOpen: false,
+          detailText: currentLang === 'ga' ? "Glaoigh le seiceáil" : "Call to verify hours"
+        };
+      }
+
+      // ============================================================================
+      // RENDERING ENGINE
+      // ============================================================================
+      function renderServices() {
+        const dublinNow = getDublinNow();
+        const container = document.getElementById("services-list");
+        const clockEl = document.getElementById("live-dublin-clock");
+        if (clockEl) {
+          clockEl.textContent = `Dublin: ${dublinNow.timeString}`;
+        }
+
+        // Expansion Seam: check if > 8 cards to show filter chips
+        const filterContainer = document.getElementById("filter-container");
+        if (filterContainer) {
+          if (SERVICES.length > 8) {
+            filterContainer.style.display = "block";
+          } else {
+            filterContainer.style.display = "none";
+          }
+        }
+
+        // Compute status for all services
+        const enrichedServices = SERVICES.map(s => {
+          const status = calculateServiceStatus(s, dublinNow);
+          return {
+            ...s,
+            status
+          };
+        });
+
+        // Sort: OPEN NOW services appear first to answer "Where can I get help right now?"
+        enrichedServices.sort((a, b) => {
+          if (a.status.isOpen && !b.status.isOpen) return -1;
+          if (!a.status.isOpen && b.status.isOpen) return 1;
+          return 0;
+        });
+
+        const strings = I18N[currentLang];
+
+        // Render cards
+        container.innerHTML = enrichedServices.map(service => {
+          const isOpen = service.status.isOpen;
+          const statusBannerClass = isOpen ? "open" : "closed";
+          const statusTitle = isOpen ? strings.openNow : strings.closedNow;
+          const serviceName = (currentLang === "ga" && service.nameGa) ? service.nameGa : service.name;
+          const categoryName = (currentLang === "ga" && service.categoryGa) ? service.categoryGa : service.category;
+
+          // Render what's offered plain chips
+          const offersChips = service.offers.map(tag => {
+            const label = strings.tags[tag] || tag;
+            return `<span class="plain-chip">${escapeHtml(label)}</span>`;
+          }).join("");
+
+          // Clean maps URL
+          const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(service.mapsQuery || service.address)}`;
+
+          // ACCESSIBILITY: Rich, descriptive screen reader labels
+          const callAriaLabel = `${strings.callAriaPrefix} ${serviceName} (${service.phone})`;
+          const mapAriaLabel = `${strings.mapAriaPrefix} ${serviceName}, ${service.address}`;
+          const bannerAriaLabel = `Status: ${statusTitle}. ${service.status.detailText}`;
+
+          return `
+            <article class="card ${isOpen ? 'is-open' : ''}" id="card-${service.id}" aria-labelledby="title-${service.id}">
+              <!-- "OPEN NOW" MUST BE VISIBLE BEFORE ANYTHING ELSE ON EACH SERVICE -->
+              <div class="card-status-banner ${statusBannerClass}" role="status" aria-label="${escapeHtml(bannerAriaLabel)}">
+                <span class="status-pill">
+                  <span class="status-indicator-dot" aria-hidden="true"></span>
+                  <strong>${statusTitle}</strong>
+                </span>
+                <span class="status-time-detail">${escapeHtml(service.status.detailText)}</span>
+              </div>
+
+              <div class="card-body">
+                <div class="card-header-meta">
+                  <h3 class="service-name" id="title-${service.id}">${escapeHtml(serviceName)}</h3>
+                  <span class="category-badge">${escapeHtml(categoryName)}</span>
+                </div>
+
+                <!-- Today's hours & schedule summary -->
+                <div class="hours-row">
+                  <div class="hours-label">${strings.todayHoursLabel}</div>
+                  <div class="hours-text">${escapeHtml(service.todayHoursSummary)}</div>
+                  ${service.notes ? `<div class="hours-subnote">${escapeHtml(service.notes)}</div>` : ''}
+                </div>
+
+                <!-- What's offered plain chips -->
+                <div class="offers-section">
+                  <div class="offers-label">${strings.offersLabel}</div>
+                  <div class="chips-row">
+                    ${offersChips}
+                  </div>
+                </div>
+
+                <!-- Action targets (min 48px hitboxes) with rich aria-label attributes -->
+                <div class="actions-grid">
+                  <!-- Tap phone number = call (Screen reader accessible) -->
+                  <a href="tel:${service.phoneRaw}" class="btn-call" aria-label="${escapeHtml(callAriaLabel)}">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                    </svg>
+                    <span>${strings.callBtn} ${escapeHtml(service.phone)}</span>
+                  </a>
+
+                  <!-- Tap address = open maps (Screen reader accessible) -->
+                  <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" class="btn-map" aria-label="${escapeHtml(mapAriaLabel)}">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--brand-green);">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                      <circle cx="12" cy="10" r="3"/>
+                    </svg>
+                    <span class="btn-map-text">
+                      <span class="addr-label">${strings.mapBtnLabel}</span>
+                      <span class="addr-val">${escapeHtml(service.address)}</span>
+                    </span>
+                  </a>
+                </div>
+              </div>
+            </article>
+          `;
+        }).join("");
+
+        // Update count text
+        const countEl = document.getElementById("service-count");
+        if (countEl) {
+          countEl.textContent = `${enrichedServices.length} ${currentLang === 'ga' ? 'seirbhísí' : 'services'}`;
+        }
+      }
+
+      function escapeHtml(str) {
+        if (!str) return "";
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      // ============================================================================
+      // INTERACTIVITY & ACCESSIBILITY HANDLERS
+      // ============================================================================
+      function setupInteractivity() {
+        // 1. Language Modal Dialog
+        const langTriggerBtn = document.getElementById("btn-lang");
+        const langModal = document.getElementById("modal-lang");
+        const closeLangModalBtn = document.getElementById("btn-close-lang-modal");
+        const closeLangFooterBtn = document.getElementById("btn-close-lang-footer");
+        const langChoiceBtns = document.querySelectorAll(".lang-choice-btn");
+        const srAnnouncer = document.getElementById("sr-announcer");
+
+        function openLangModal() {
+          if (!langModal) return;
+          langModal.removeAttribute("hidden");
+          langModal.classList.add("is-open");
+          langTriggerBtn.setAttribute("aria-expanded", "true");
+          // Focus current selected language
+          const activeBtn = langModal.querySelector(`.lang-choice-btn[data-lang="${currentLang}"]`);
+          if (activeBtn) {
+            activeBtn.focus();
+          } else if (closeLangModalBtn) {
+            closeLangModalBtn.focus();
+          }
+        }
+
+        function closeLangModal() {
+          if (!langModal) return;
+          langModal.setAttribute("hidden", "");
+          langModal.classList.remove("is-open");
+          langTriggerBtn.setAttribute("aria-expanded", "false");
+          langTriggerBtn.focus();
+        }
+
+        if (langTriggerBtn) {
+          langTriggerBtn.addEventListener("click", openLangModal);
+        }
+
+        if (closeLangModalBtn) {
+          closeLangModalBtn.addEventListener("click", closeLangModal);
+        }
+
+        if (closeLangFooterBtn) {
+          closeLangFooterBtn.addEventListener("click", closeLangModal);
+        }
+
+        // Close on backdrop click
+        if (langModal) {
+          langModal.addEventListener("click", (e) => {
+            if (e.target === langModal) {
+              closeLangModal();
+            }
+          });
+        }
+
+        // Close on Escape key
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && langModal && langModal.classList.contains("is-open")) {
+            closeLangModal();
+          }
+        });
+
+        // Select language
+        langChoiceBtns.forEach(btn => {
+          btn.addEventListener("click", () => {
+            const selected = btn.getAttribute("data-lang");
+            if (selected && I18N[selected]) {
+              currentLang = selected;
+
+              // Update active state in modal
+              langChoiceBtns.forEach(b => {
+                const isActive = b.getAttribute("data-lang") === currentLang;
+                b.classList.toggle("active", isActive);
+                b.setAttribute("aria-checked", isActive ? "true" : "false");
+              });
+
+              // Announce change to screen reader
+              if (srAnnouncer) {
+                srAnnouncer.textContent = I18N[currentLang].announcerChanged;
+              }
+
+              // Update document lang and RTL direction for Arabic
+              document.documentElement.lang = currentLang;
+              document.documentElement.dir = (currentLang === "ar") ? "rtl" : "ltr";
+
+              updateStaticText();
+              renderServices();
+              closeLangModal();
+            }
+          });
+        });
+
+        // 2. Map View Toggle
+        const mapToggleBtn = document.getElementById("btn-map-toggle");
+        const mapPanel = document.getElementById("map-preview");
+        const closeMapBtn = document.getElementById("btn-close-map");
+
+        function toggleMap(show) {
+          const willShow = show !== undefined ? show : mapPanel.getAttribute("hidden") !== null;
+          if (willShow) {
+            mapPanel.removeAttribute("hidden");
+            mapPanel.classList.add("is-visible");
+            mapToggleBtn.classList.add("active");
+            mapToggleBtn.setAttribute("aria-expanded", "true");
+            mapToggleBtn.setAttribute("aria-label", "Close central Dublin offline overview map");
+          } else {
+            mapPanel.setAttribute("hidden", "");
+            mapPanel.classList.remove("is-visible");
+            mapToggleBtn.classList.remove("active");
+            mapToggleBtn.setAttribute("aria-expanded", "false");
+            mapToggleBtn.setAttribute("aria-label", "Toggle central Dublin offline overview map");
+          }
+        }
+
+        if (mapToggleBtn) {
+          mapToggleBtn.addEventListener("click", () => toggleMap());
+        }
+
+        if (closeMapBtn) {
+          closeMapBtn.addEventListener("click", () => toggleMap(false));
+        }
+
+        // 3. Stubbed Filter Chips Handler (activates if services > 8)
+        const filterBtns = document.querySelectorAll(".filter-chip-btn");
+        filterBtns.forEach(btn => {
+          btn.addEventListener("click", (e) => {
+            filterBtns.forEach(b => b.style.background = "var(--chip-bg)");
+            e.currentTarget.style.background = "var(--border-color)";
+          });
+        });
+
+        // 4. Update clock every 30 seconds
+        setInterval(renderServices, 30000);
+      }
+
+      function updateStaticText() {
+        const s = I18N[currentLang];
+        document.getElementById("txt-title").textContent = s.title;
+        document.getElementById("txt-subtitle").textContent = s.subtitle;
+        document.getElementById("emerg-label").textContent = s.emergLabel;
+        document.getElementById("txt-status-offline").textContent = s.statusOffline;
+        document.getElementById("txt-directory-heading").textContent = s.dirHeading;
+        document.getElementById("btn-lang-text").textContent = s.langBtn;
+        document.getElementById("btn-lang").setAttribute("aria-label", `${s.changeLangLabel}. Current: ${s.langName}`);
+        document.getElementById("modal-lang-title").textContent = s.modalTitle;
+        document.getElementById("btn-close-lang-footer").textContent = s.modalDone;
+        document.getElementById("btn-map-text").textContent = s.findMeMapBtn;
+        document.getElementById("txt-map-head").textContent = s.mapHead;
+        document.getElementById("txt-map-desc").textContent = s.mapDesc;
+        document.getElementById("txt-footer-tell-title").textContent = s.tellTitle;
+        document.getElementById("txt-footer-tell-body").textContent = s.tellBody;
+        document.getElementById("txt-footer-email-link").textContent = s.tellLink;
+        document.getElementById("txt-footer-credits").textContent = s.credits;
+      }
+
+      // Initial boot
+      document.addEventListener("DOMContentLoaded", () => {
+        setupInteractivity();
+        renderServices();
+      });
+      // Fallback if DOM already loaded
+      if (document.readyState === "interactive" || document.readyState === "complete") {
+        setupInteractivity();
+        renderServices();
+      }
+    </script>
+  </body>
+</html>
+

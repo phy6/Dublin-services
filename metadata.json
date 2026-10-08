@@ -1,0 +1,6 @@
+{
+  "name": "Dublin City Support Services",
+  "description": "Free food, showers, shelter, and healthcare directory in Dublin with live open hours, direct calling, and maps.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
